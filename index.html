@@ -7,86 +7,105 @@
     body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
-        background: radial-gradient(circle at center, #0a0a0f, #000);
+        background: linear-gradient(135deg,#000,#050a1a);
         color: #0ff;
         text-align: center;
     }
 
     h1 {
+        font-size: 45px;
         margin-top: 20px;
-        font-size: 40px;
         text-shadow: 0 0 15px #0ff;
-        letter-spacing: 2px;
     }
 
-    .game-container {
+    .game-box {
+        width: 90%;
+        max-width: 800px;
         margin: 40px auto;
         padding: 25px;
-        width: 90%;
-        max-width: 700px;
         border: 2px solid #0ff;
+        background: rgba(0,255,255,0.06);
         border-radius: 20px;
+        box-shadow: 0 0 20px #0ff, inset 0 0 15px #0ff;
         backdrop-filter: blur(10px);
-        background: rgba(0,255,255,0.05);
-        box-shadow: 0 0 15px #0ff inset, 0 0 20px #0ff;
-    }
-
-    h2 {
-        text-shadow: 0 0 10px #0ff;
     }
 
     canvas {
-        margin-top: 15px;
         border-radius: 10px;
         border: 2px solid #0ff;
-        box-shadow: 0 0 20px #0ff;
         background: #000;
+        margin-top: 20px;
+        box-shadow: 0 0 25px #0ff;
     }
 
-    /* Botões */
-    .btn {
-        padding: 10px 20px;
-        border: 2px solid #0ff;
-        background: transparent;
-        color: #0ff;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
-        border-radius: 8px;
-    }
-    .btn:hover {
-        background: #0ff;
-        color: #000;
-        box-shadow: 0 0 15px #0ff;
+    .instrucao {
+        margin-top: 15px;
+        font-size: 16px;
+        color: #8ff;
     }
 </style>
 </head>
 <body>
 
-<h1>ARCADE FUTURISTA</h1>
+<h1>🎮 ARCADE FUTURISTA</h1>
 
-<!-- ============================
-         SNAKE / COBRINHA
-     ============================ -->
-<div class="game-container">
+<!-- ============================================================
+                       SNAKE FUTURISTA
+     ============================================================ -->
+<div class="game-box">
     <h2>🐍 Snake Futurista</h2>
     <canvas id="snake" width="320" height="320"></canvas>
+
+    <p class="instrucao">
+        ▶ **Como jogar:** Use as **setas do teclado** para mover. <br>
+        Coma os quadrados vermelhos para crescer. Não bata nas paredes nem em você mesmo.
+    </p>
 </div>
 
-<!-- ============================
-            PONG NEON
-     ============================ -->
-<div class="game-container">
+<!-- ============================================================
+                       PONG NEON
+     ============================================================ -->
+<div class="game-box">
     <h2>🏓 Pong Neon</h2>
     <canvas id="pong" width="500" height="300"></canvas>
+
+    <p class="instrucao">
+        ▶ **Como jogar:** Use o **mouse** para mover sua barra à esquerda. <br>
+        Impessa a bola de sair e tente fazer ela passar pela defesa inimiga.
+    </p>
 </div>
 
-<!-- ============================
-         ASTEROIDS SHOOTER
-     ============================ -->
-<div class="game-container">
+<!-- ============================================================
+                     ASTEROIDS SHOOTER
+     ============================================================ -->
+<div class="game-box">
     <h2>🚀 Asteroids Shooter</h2>
     <canvas id="shoot" width="500" height="300"></canvas>
+
+    <p class="instrucao">
+        ▶ **Como jogar:**  
+        - **Seta Esquerda/Direita:** girar a nave  
+        - **Seta Cima:** acelerar  
+        - **Espaço:** atirar  
+        - Destrua os asteróides sem ser atingido.
+    </p>
+</div>
+
+<!-- ============================================================
+                     JOGO TIPO FREE FIRE (TOP-DOWN)
+     ============================================================ -->
+<div class="game-box">
+    <h2>🔫 Battle Royale Futurista (Estilo Free Fire)</h2>
+    <canvas id="ff" width="600" height="400"></canvas>
+
+    <p class="instrucao">
+        ▶ **Como jogar:**  
+        - **W A S D:** mover o personagem  
+        - **Mouse:** mirar  
+        - **Clique Esquerdo:** atirar  
+        - **Coletáveis verdes:** recuperam vida  
+        - **Evite inimigos (robôs) e sobreviva o máximo possível!**
+    </p>
 </div>
 
 <script>
@@ -138,9 +157,8 @@ function loopSnake(){
 }
 loopSnake();
 
-
 /* ===========================================================
-   PONG NEON COM IA
+   PONG NEON
    =========================================================== */
 const pong = document.getElementById("pong");
 const ctxP = pong.getContext("2d");
@@ -159,25 +177,21 @@ function loopPong(){
     ball.x+=ball.dx;
     ball.y+=ball.dy;
 
-    if(ball.y<0 || ball.y>300) ball.dy*=-1;
+    if(ball.y<0||ball.y>300)ball.dy*=-1;
 
-    // IA CPU: segue suavemente
     cpu.y += (ball.y - (cpu.y+cpu.h/2)) * 0.08;
 
-    // colisões
     if(ball.x < player.x+player.w && ball.y>player.y && ball.y<player.y+player.h)
         ball.dx = Math.abs(ball.dx);
 
     if(ball.x > cpu.x-cpu.w && ball.y>cpu.y && ball.y<cpu.y+cpu.h)
         ball.dx = -Math.abs(ball.dx);
 
-    // reset
     if(ball.x<0||ball.x>500){
         ball.x=250; ball.y=150;
         ball.dx*=-1;
     }
 
-    // desenho
     ctxP.fillStyle="#0ff";
     ctxP.fillRect(player.x,player.y,player.w,player.h);
     ctxP.fillRect(cpu.x,cpu.y,cpu.w,cpu.h);
@@ -191,31 +205,29 @@ function loopPong(){
 }
 loopPong();
 
-
 /* ===========================================================
    ASTEROIDS SHOOTER
    =========================================================== */
 const shoot = document.getElementById("shoot");
 const ctxA = shoot.getContext("2d");
 
-let ship = {x:250,y:150,r:10};
+let ship={x:250,y:150};
+let angle=0;
 let bullets=[];
 let asteroids=[];
-let angle=0;
 
 document.addEventListener("keydown",e=>{
     if(e.key==="ArrowLeft")angle-=0.1;
     if(e.key==="ArrowRight")angle+=0.1;
     if(e.key==="ArrowUp"){
-        ship.x+=Math.cos(angle)*5;
-        ship.y+=Math.sin(angle)*5;
+        ship.x += Math.cos(angle)*4;
+        ship.y += Math.sin(angle)*4;
     }
     if(e.key===" "){
         bullets.push({
-            x:ship.x,
-            y:ship.y,
-            dx:Math.cos(angle)*5,
-            dy:Math.sin(angle)*5
+            x:ship.x, y:ship.y,
+            dx:Math.cos(angle)*6,
+            dy:Math.sin(angle)*6
         });
     }
 });
@@ -224,9 +236,9 @@ function spawnAsteroid(){
     asteroids.push({
         x:Math.random()*500,
         y:Math.random()*300,
-        dx:Math.random()*2-1,
-        dy:Math.random()*2-1,
-        r:15
+        dx:(Math.random()*2-1)*1.5,
+        dy:(Math.random()*2-1)*1.5,
+        r:12
     });
 }
 setInterval(spawnAsteroid,1000);
@@ -235,7 +247,6 @@ function loopShoot(){
     ctxA.fillStyle="#000";
     ctxA.fillRect(0,0,500,300);
 
-    // nave
     ctxA.save();
     ctxA.translate(ship.x,ship.y);
     ctxA.rotate(angle);
@@ -248,7 +259,6 @@ function loopShoot(){
     ctxA.stroke();
     ctxA.restore();
 
-    // balas
     bullets.forEach(b=>{
         b.x+=b.dx;
         b.y+=b.dy;
@@ -256,15 +266,14 @@ function loopShoot(){
         ctxA.fillRect(b.x,b.y,3,3);
     });
 
-    // asteroides
     asteroids.forEach(a=>{
         a.x+=a.dx;
         a.y+=a.dy;
 
-        if(a.x<0) a.x=500;
-        if(a.x>500) a.x=0;
-        if(a.y<0) a.y=300;
-        if(a.y>300) a.y=0;
+        if(a.x<0)a.x=500;
+        if(a.x>500)a.x=0;
+        if(a.y<0)a.y=300;
+        if(a.y>300)a.y=0;
 
         ctxA.strokeStyle="#f00";
         ctxA.beginPath();
@@ -272,15 +281,11 @@ function loopShoot(){
         ctxA.stroke();
     });
 
-    // colisões bala-asteroide
     bullets = bullets.filter(b=>{
         let hit=false;
         asteroids = asteroids.filter(a=>{
-            const dist = Math.hypot(a.x-b.x, a.y-b.y);
-            if(dist < a.r){
-                hit=true;
-                return false;
-            }
+            const d = Math.hypot(a.x-b.x, a.y-b.y);
+            if(d<a.r){ hit=true; return false; }
             return true;
         });
         return !hit;
@@ -290,6 +295,122 @@ function loopShoot(){
 }
 loopShoot();
 
+/* ===========================================================
+   JOGO ESTILO FREE FIRE (TOP-DOWN SHOOTER)
+   =========================================================== */
+const ff = document.getElementById("ff");
+const ctxF = ff.getContext("2d");
+
+let playerFF = {x:300,y:200, hp:100};
+let enemies = [];
+let heals = [];
+let bulletsFF = [];
+let keys = {};
+
+document.addEventListener("keydown", e => keys[e.key]=true);
+document.addEventListener("keyup", e => keys[e.key]=false);
+
+ff.addEventListener("mousedown", ()=> shootBullet());
+ff.addEventListener("mousemove", e=>{
+    const rect = ff.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+});
+let mouseX=0, mouseY=0;
+
+function shootBullet(){
+    const angle = Math.atan2(mouseY-playerFF.y, mouseX-playerFF.x);
+    bulletsFF.push({
+        x:playerFF.x,
+        y:playerFF.y,
+        dx:Math.cos(angle)*6,
+        dy:Math.sin(angle)*6
+    });
+}
+
+function spawnEnemy(){
+    enemies.push({
+        x:Math.random()*600,
+        y:Math.random()*400,
+        hp:20
+    });
+}
+setInterval(spawnEnemy,1200);
+
+function spawnHeal(){
+    heals.push({
+        x:Math.random()*600,
+        y:Math.random()*400
+    });
+}
+setInterval(spawnHeal,5000);
+
+function loopFF(){
+    ctxF.fillStyle="#000";
+    ctxF.fillRect(0,0,600,400);
+
+    if(keys["w"])playerFF.y-=3;
+    if(keys["s"])playerFF.y+=3;
+    if(keys["a"])playerFF.x-=3;
+    if(keys["d"])playerFF.x+=3;
+
+    ctxF.fillStyle="#0ff";
+    ctxF.beginPath();
+    ctxF.arc(playerFF.x,playerFF.y,10,0,Math.PI*2);
+    ctxF.fill();
+
+    bulletsFF.forEach(b=>{
+        b.x+=b.dx;
+        b.y+=b.dy;
+        ctxF.fillStyle="#fff";
+        ctxF.fillRect(b.x,b.y,4,4);
+    });
+
+    bulletsFF = bulletsFF.filter(b=>b.x>=0&&b.x<=600&&b.y>=0&&b.y<=400);
+
+    enemies.forEach(e=>{
+        const angle = Math.atan2(playerFF.y-e.y, playerFF.x-e.x);
+        e.x += Math.cos(angle)*1.2;
+        e.y += Math.sin(angle)*1.2;
+
+        ctxF.fillStyle="#f00";
+        ctxF.beginPath();
+        ctxF.arc(e.x,e.y,10,0,Math.PI*2);
+        ctxF.fill();
+    });
+
+    enemies = enemies.filter(e=>{
+        for(let b of bulletsFF){
+            if(Math.hypot(e.x-b.x,e.y-b.y)<12){
+                e.hp-=20;
+                b.x=-9999;
+            }
+        }
+        if(Math.hypot(playerFF.x-e.x,041bielzk.y-e.y)<15){
+            playerFF.hp-=1;
+        }
+        return e.hp>0;
+    });
+
+    heals.forEach(h=>{
+        ctxF.fillStyle="#0f0";
+        ctxF.fillRect(h.x,h.y,10,10);
+    });
+
+    heals = heals.filter(h=>{
+        if(Math.hypot(h.x-playerFF.x,h.y-playerFF.y)<15){
+            playerFF.hp = Math.min(100, playerFF.hp+20);
+            return false;
+        }
+        return true;
+    });
+
+    ctxF.fillStyle="#0f0";
+    ctxF.fillText("Vida: "+playerFF.hp,10,15);
+
+    requestAnimationFrame(loopFF);
+}
+loopFF();
 </script>
 
 </body>
