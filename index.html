@@ -1,190 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Jogos na Página</title>
-<style>
-    body { font-family: Arial; background: #222; color: #fff; text-align: center; }
-    h1 { margin-top: 20px; }
-    .game-container { margin: 40px auto; padding: 20px; width: 90%; max-width: 600px; background: #333; border-radius: 10px; }
-    canvas { background: #000; border: 2px solid #fff; margin-top: 20px; }
-    /* JOGO DA VELHA */
-    #velha { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; justify-content: center; margin-top: 20px; }
-    .casa { width: 100px; height: 100px; background: #444; font-size: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Fire – Informações Atualizadas</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; padding: 0; }
+    header { background-color: #000; color: #fff; padding: 20px; text-align: center; }
+    section { padding: 20px; margin: 10px auto; max-width: 800px; background: #fff; border-radius: 8px; }
+    h2 { color: #444; }
+    .notice { background: #fffbdd; padding: 10px; border: 1px solid #f0e68c; border-radius: 4px; }
+  </style>
 </head>
 <body>
 
-<h1>🎮 Mini Jogos</h1>
+  <header>
+    <h1>Free Fire</h1>
+    <p>Battle Royale móvel — notícias e atualizações recentes (2025)</p>
+  </header>
 
-<!-- ====================================================== -->
-<!-- JOGO DA VELHA                                          -->
-<!-- ====================================================== -->
-<div class="game-container">
-    <h2>Jogo da Velha</h2>
-    <div id="velha"></div>
-    <p id="status"></p>
-</div>
+  <section>
+    <h2>🎮 O que é o Free Fire</h2>
+    <p>Free Fire é um jogo de tiro / battle royale da Garena, gratuito para smartphones. Nele, jogadores competem para sobreviver em modos como <strong>Battle Royale (BR)</strong> ou <strong>Clash Squad (CS)</strong>, buscando ser o último sobrevivente. :contentReference[oaicite:2]{index=2}</p>
+  </section>
 
-<!-- ====================================================== -->
-<!-- JOGO PONG                                              -->
-<!-- ====================================================== -->
-<div class="game-container">
-    <h2>Pong Simples</h2>
-    <canvas id="pong" width="500" height="300"></canvas>
-</div>
+  <section>
+    <h2>🆕 Últimas Atualizações e Novidades (2025)</h2>
+    <div class="notice">
+      <p><strong>Patch OB51 (outubro 2025)</strong>: traz novidades como um novo personagem chamado <strong>Nero</strong>, com habilidade especial; ajustes de armas; e melhorias gerais de jogabilidade. :contentReference[oaicite:3]{index=3}</p>
+      <p>Nova colaboração: <strong>Free Fire × Digimon Adventure</strong> — com skins, visuais e possivelmente pets/companheiros especiais. :contentReference[oaicite:5]{index=5}</p>
+      <p>Eventos temáticos recentes incluem o <strong>“Winterland 2025”</strong> e o retorno de várias recompensas, skins e eventos especiais via Ring Event, Evo Vault, entre outros. :contentReference[oaicite:6]{index=6}</p>
+    </div>
+  </section>
 
-<!-- ====================================================== -->
-<!-- JOGO SNAKE                                             -->
-<!-- ====================================================== -->
-<div class="game-container">
-    <h2>Snake (Cobrinha)</h2>
-    <canvas id="snake" width="300" height="300"></canvas>
-</div>
+  <section>
+    <h2>🏆 Esports & Competição Global</h2>
+    <p>O campeonato global do Free Fire em 2025, o <strong>Free Fire World Series - Global Finals 2025</strong>, terminou com vitória da organização tailandesa <strong>Buriram United Esports</strong>. O evento alcançou pico de 775.141 espectadores simultâneos — um dos maiores dos últimos anos. :contentReference[oaicite:9]{index=9}</p>
+    <p>Isso reforça que o cenário competitivo do jogo continua muito ativo — com torneios regionais, qualificatórias e competições internacionais. :contentReference[oaicite:10]{index=10}</p>
+  </section>
 
+  <section>
+    <h2>📅 Próximos Eventos e O que Ficar de Olho</h2>
+    <ul>
+      <li><strong>Booyah Pass de dezembro 2025</strong>: chamado “Stellar Shot”, com novos bundles, skins para armas e itens cosméticos. :contentReference[oaicite:11]{index=11}</li>
+      <li><strong>Evento de inverno / Winterland</strong>: com recompensas especiais, skins temáticas e chances de ganhar itens exclusivos através de eventos de tempo limitado. :contentReference[oaicite:12]{index=12}</li>
+      <li><strong>Novas colaborações</strong>: além de Digimon, há rumores/planos de colaborações futuras (como com anime/mídias populares), o que pode trazer skins, visuais e conteúdos especiais. :contentReference[oaicite:13]{index=13}</li>
+    </ul>
+  </section>
 
-<script>
-/* ======================================================
-   JOGO DA VELHA
-   ====================================================== */
-let board = ["", "", "", "", "", "", "", "", ""];
-let jogador = "X";
-const velha = document.getElementById("velha");
-const statusVelha = document.getElementById("status");
-
-function renderVelha() {
-    velha.innerHTML = "";
-    board.forEach((valor, i) => {
-        const div = document.createElement("div");
-        div.className = "casa";
-        div.textContent = valor;
-        div.onclick = () => jogar(i);
-        velha.appendChild(div);
-    });
-}
-function jogar(i) {
-    if (board[i] !== "") return;
-    board[i] = jogador;
-    if (checarVitoria(jogador)) {
-        statusVelha.textContent = `${jogador} venceu!`;
-        return;
-    }
-    jogador = jogador === "X" ? "O" : "X";
-    renderVelha();
-}
-function checarVitoria(p) {
-    const win = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-    ];
-    return win.some(c => c.every(i => board[i] === p));
-}
-renderVelha();
-
-/* ======================================================
-   PONG SIMPLES
-   ====================================================== */
-const pong = document.getElementById("pong");
-const ctxP = pong.getContext("2d");
-
-let bola = { x:250, y:150, dx:3, dy:3, r:8 };
-let player = { x:10, y:120, w:10, h:60 };
-let cpu = { x:480, y:120, w:10, h:60 };
-
-document.addEventListener("mousemove", e => {
-    player.y = e.clientY - pong.offsetTop - 30;
-});
-
-function loopPong() {
-    ctxP.clearRect(0,0,500,300);
-
-    // bola
-    bola.x += bola.dx;
-    bola.y += bola.dy;
-    if (bola.y < 0 || bola.y > 300) bola.dy *= -1;
-
-    // colisões
-    if (bola.x < player.x + player.w && bola.y > player.y && bola.y < player.y + player.h) bola.dx *= -1;
-    if (bola.x > cpu.x - cpu.w && bola.y > cpu.y && bola.y < cpu.y + cpu.h) bola.dx *= -1;
-
-    // IA CPU
-    cpu.y = bola.y - 30;
-
-    // reset
-    if (bola.x < 0 || bola.x > 500) {
-        bola.x = 250; bola.y = 150;
-    }
-
-    // desenho
-    ctxP.fillStyle = "white";
-    ctxP.fillRect(player.x, player.y, player.w, player.h);
-    ctxP.fillRect(cpu.x, cpu.y, cpu.w, cpu.h);
-
-    ctxP.beginPath();
-    ctxP.arc(bola.x, bola.y, bola.r, 0, Math.PI*2);
-    ctxP.fill();
-
-    requestAnimationFrame(loopPong);
-}
-loopPong();
-
-/* ======================================================
-   SNAKE (COBRINHA)
-   ====================================================== */
-const snakeCanvas = document.getElementById("snake");
-const ctxS = snakeCanvas.getContext("2d");
-
-let snake = [{x:150, y:150}];
-let dir = "right";
-let food = { x: 100, y: 100 };
-
-document.addEventListener("keydown", e => {
-    if (e.key === "ArrowUp" && dir !== "down") dir = "up";
-    if (e.key === "ArrowDown" && dir !== "up") dir = "down";
-    if (e.key === "ArrowLeft" && dir !== "right") dir = "left";
-    if (e.key === "ArrowRight" && dir !== "left") dir = "right";
-});
-
-function loopSnake() {
-    let head = { ...snake[0] };
-
-    if (dir === "up") head.y -= 10;
-    if (dir === "down") head.y += 10;
-    if (dir === "left") head.x -= 10;
-    if (dir === "right") head.x += 10;
-
-    snake.unshift(head);
-
-    // comer
-    if (head.x === food.x && head.y === food.y) {
-        food.x = Math.floor(Math.random()*30)*10;
-        food.y = Math.floor(Math.random()*30)*10;
-    } else {
-        snake.pop();
-    }
-
-    // colisões
-    if (head.x < 0 || head.x >= 300 || head.y < 0 || head.y >= 300 ||
-        snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
-
-        snake = [{x:150,y:150}];
-        dir = "right";
-    }
-
-    ctxS.fillStyle = "black";
-    ctxS.fillRect(0,0,300,300);
-
-    ctxS.fillStyle = "lime";
-    snake.forEach(s => ctxS.fillRect(s.x, s.y, 10, 10));
-
-    ctxS.fillStyle = "red";
-    ctxS.fillRect(food.x, food.y, 10, 10);
-
-    setTimeout(loopSnake, 80);
-}
-loopSnake();
-</script>
+  <footer style="text-align:center; padding: 10px; font-size: 0.9em; color: #666;">
+    <p>Informações atualizadas até dezembro de 2025 — fique de olho nos anúncios oficiais para novidades.</p>
+  </footer>
 
 </body>
 </html>
