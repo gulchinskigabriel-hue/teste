@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Jogos na Página</title>
+<style>
+    body { font-family: Arial; background: #222; color: #fff; text-align: center; }
+    h1 { margin-top: 20px; }
+    .game-container { margin: 40px auto; padding: 20px; width: 90%; max-width: 600px; background: #333; border-radius: 10px; }
+    canvas { background: #000; border: 2px solid #fff; margin-top: 20px; }
+    /* JOGO DA VELHA */
+    #velha { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; justify-content: center; margin-top: 20px; }
+    .casa { width: 100px; height: 100px; background: #444; font-size: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>🎮 Mini Jogos</h1>
+
+<!-- ====================================================== -->
+<!-- JOGO DA VELHA                                          -->
+<!-- ====================================================== -->
+<div class="game-container">
+    <h2>Jogo da Velha</h2>
+    <div id="velha"></div>
+    <p id="status"></p>
+</div>
+
+<!-- ====================================================== -->
+<!-- JOGO PONG                                              -->
+<!-- ====================================================== -->
+<div class="game-container">
+    <h2>Pong Simples</h2>
+    <canvas id="pong" width="500" height="300"></canvas>
+</div>
+
+<!-- ====================================================== -->
+<!-- JOGO SNAKE                                             -->
+<!-- ====================================================== -->
+<div class="game-container">
+    <h2>Snake (Cobrinha)</h2>
+    <canvas id="snake" width="300" height="300"></canvas>
+</div>
+
+
+<script>
+/* ======================================================
+   JOGO DA VELHA
+   ====================================================== */
+let board = ["", "", "", "", "", "", "", "", ""];
+let jogador = "X";
+const velha = document.getElementById("velha");
+const statusVelha = document.getElementById("status");
+
+function renderVelha() {
+    velha.innerHTML = "";
+    board.forEach((valor, i) => {
+        const div = document.createElement("div");
+        div.className = "casa";
+        div.textContent = valor;
+        div.onclick = () => jogar(i);
+        velha.appendChild(div);
+    });
+}
+function jogar(i) {
+    if (board[i] !== "") return;
+    board[i] = jogador;
+    if (checarVitoria(jogador)) {
+        statusVelha.textContent = `${jogador} venceu!`;
+        return;
+    }
+    jogador = jogador === "X" ? "O" : "X";
+    renderVelha();
+}
+function checarVitoria(p) {
+    const win = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ];
+    return win.some(c => c.every(i => board[i] === p));
+}
+renderVelha();
+
+/* ======================================================
+   PONG SIMPLES
+   ====================================================== */
+const pong = document.getElementById("pong");
+const ctxP = pong.getContext("2d");
+
+let bola = { x:250, y:150, dx:3, dy:3, r:8 };
+let player = { x:10, y:120, w:10, h:60 };
+let cpu = { x:480, y:120, w:10, h:60 };
+
+document.addEventListener("mousemove", e => {
+    player.y = e.clientY - pong.offsetTop - 30;
+});
+
+function loopPong() {
+    ctxP.clearRect(0,0,500,300);
+
+    // bola
+    bola.x += bola.dx;
+    bola.y += bola.dy;
+    if (bola.y < 0 || bola.y > 300) bola.dy *= -1;
+
+    // colisões
+    if (bola.x < player.x + player.w && bola.y > player.y && bola.y < player.y + player.h) bola.dx *= -1;
+    if (bola.x > cpu.x - cpu.w && bola.y > cpu.y && bola.y < cpu.y + cpu.h) bola.dx *= -1;
+
+    // IA CPU
+    cpu.y = bola.y - 30;
+
+    // reset
+    if (bola.x < 0 || bola.x > 500) {
+        bola.x = 250; bola.y = 150;
+    }
+
+    // desenho
+    ctxP.fillStyle = "white";
+    ctxP.fillRect(player.x, player.y, player.w, player.h);
+    ctxP.fillRect(cpu.x, cpu.y, cpu.w, cpu.h);
+
+    ctxP.beginPath();
+    ctxP.arc(bola.x, bola.y, bola.r, 0, Math.PI*2);
+    ctxP.fill();
+
+    requestAnimationFrame(loopPong);
+}
+loopPong();
+
+/* ======================================================
+   SNAKE (COBRINHA)
+   ====================================================== */
+const snakeCanvas = document.getElementById("snake");
+const ctxS = snakeCanvas.getContext("2d");
+
+let snake = [{x:150, y:150}];
+let dir = "right";
+let food = { x: 100, y: 100 };
+
+document.addEventListener("keydown", e => {
+    if (e.key === "ArrowUp" && dir !== "down") dir = "up";
+    if (e.key === "ArrowDown" && dir !== "up") dir = "down";
+    if (e.key === "ArrowLeft" && dir !== "right") dir = "left";
+    if (e.key === "ArrowRight" && dir !== "left") dir = "right";
+});
+
+function loopSnake() {
+    let head = { ...snake[0] };
+
+    if (dir === "up") head.y -= 10;
+    if (dir === "down") head.y += 10;
+    if (dir === "left") head.x -= 10;
+    if (dir === "right") head.x += 10;
+
+    snake.unshift(head);
+
+    // comer
+    if (head.x === food.x && head.y === food.y) {
+        food.x = Math.floor(Math.random()*30)*10;
+        food.y = Math.floor(Math.random()*30)*10;
+    } else {
+        snake.pop();
+    }
+
+    // colisões
+    if (head.x < 0 || head.x >= 300 || head.y < 0 || head.y >= 300 ||
+        snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
+
+        snake = [{x:150,y:150}];
+        dir = "right";
+    }
+
+    ctxS.fillStyle = "black";
+    ctxS.fillRect(0,0,300,300);
+
+    ctxS.fillStyle = "lime";
+    snake.forEach(s => ctxS.fillRect(s.x, s.y, 10, 10));
+
+    ctxS.fillStyle = "red";
+    ctxS.fillRect(food.x, food.y, 10, 10);
+
+    setTimeout(loopSnake, 80);
+}
+loopSnake();
+</script>
+
+</body>
+</html>
